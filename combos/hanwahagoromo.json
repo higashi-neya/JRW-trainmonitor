@@ -1,0 +1,37 @@
+[
+  {
+    "type": "快速",
+    "dest": "和歌山",
+    "cars": 6
+  },
+  {
+    "type": "快速",
+    "dest": "日根野",
+    "cars": 6
+  },
+  {
+    "type": "普通",
+    "dest": "和歌山",
+    "cars": 4
+  },
+  {
+    "type": "普通",
+    "dest": "日根野",
+    "cars": 4
+  },
+  {
+    "type": "紀州路快速",
+    "dest": "和歌山",
+    "cars": null
+  },
+  {
+    "type": "特急",
+    "dest": "白浜",
+    "cars": null
+  },
+  {
+    "type": "特急",
+    "dest": "新大阪",
+    "cars": null
+  }
+]

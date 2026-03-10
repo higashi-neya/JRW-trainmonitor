@@ -1,0 +1,43 @@
+[
+  {
+    "type": "新快速",
+    "dest": "野洲",
+    "cars": 12
+  },
+  {
+    "type": "新快速",
+    "dest": "姫路",
+    "cars": 12
+  },
+  {
+    "type": "快速",
+    "dest": "京都",
+    "cars": 8
+  },
+  {
+    "type": "快速",
+    "dest": "大阪",
+    "cars": 8
+  },
+  {
+    "type": "普通",
+    "dest": "京都",
+    "cars": 4
+  },
+  {
+    "type": "普通",
+    "dest": "高槻",
+    "cars": 4
+  },
+  {
+    "type": "特急",
+    "dest": "京都",
+    "cars": null
+  },
+  {
+    "type": "特急",
+    "dest": "敦賀",
+    "cars": null,
+    "u_alert": true
+  }
+]
