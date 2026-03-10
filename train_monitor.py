@@ -49,11 +49,7 @@ LINES = [l.strip() for l in os.environ.get("LINES", _DEFAULT_LINES).split(",") i
 API_BASE    = "https://www.train-guide.westjr.co.jp/api/v3"
 COMBOS_DIR  = Path(__file__).parent / "combos"
 
-TYPE_MAP = {
-    0: "普通", 1: "新快速", 2: "快速", 3: "普通", 4: "特急",
-    5: "急行", 6: "直通特急", 7: "直通快速", 8: "特快速",
-    9: "準急", 10: "普通", 11: "快速", 12: "新快速",
-}
+
 
 
 # ────────────────────────────────────────────────
@@ -202,17 +198,20 @@ def fetch_station_map(line: str) -> dict[str, str]:
 
 
 def extract_text(val) -> str:
-    """APIの値が {'text': '姫路', ...} 形式でも文字列でも駅名を返す"""
+    """APIの値が {'text': '姫路', ...} 形式でも文字列でも名称を返す"""
     if isinstance(val, dict):
         return str(val.get("text", "不明")).strip()
     return str(val).strip() if val else "不明"
 
 
 def extract_station_name(code: str, st_map: dict) -> str:
-    """駅コードから駅名を返す。コードが '_' を含む場合は分割して照合"""
-    # "0450_####" のような形式に対応
+    """
+    駅コードから駅名を返す。
+    "0435_0462" → "0435" 部分で照合
+    "0416_####" → "0416" 部分で照合（####は終点付近を意味する）
+    """
     base = code.split("_")[0].zfill(4)
-    return st_map.get(base, st_map.get(code, "不明"))
+    return st_map.get(base, "不明")
 
 
 def parse_trains(data: dict, st_map: dict) -> list[dict]:
@@ -220,33 +219,36 @@ def parse_trains(data: dict, st_map: dict) -> list[dict]:
     for t in data.get("trains", []):
         no = str(t.get("no", "不明"))
 
-        # 行先：辞書型 {'text': '姫路', 'code': '...', 'line': '...'} に対応
-        dest = extract_text(t.get("dest", t.get("destination", "不明")))
+        # 行先：{"text": "姫路", "code": "...", "line": "..."} 形式
+        dest = extract_text(t.get("dest", "不明"))
 
-        # 種別：数値コード or 辞書型 or 文字列
-        type_raw = t.get("type", t.get("typeCode", ""))
-        if isinstance(type_raw, dict):
-            type_name = extract_text(type_raw)
-        elif isinstance(type_raw, int):
-            type_name = TYPE_MAP.get(type_raw, f"種別{type_raw}")
-        else:
-            type_name = str(type_raw).strip()
+        # 種別：displayType をそのまま使用（"新快速"/"普通" など）
+        type_name = str(t.get("displayType", "") or "不明").strip()
 
-        # 走行位置："0450_####" or "0302.5" 形式に対応
-        pos_str   = str(t.get("pos", ""))
-        if "." in pos_str:
-            parts     = pos_str.split(".")
-            prev_code = parts[0]
+        # 走行位置："0435_0462"（前駅_次駅）or "0416_####"（終点付近）
+        pos_str = str(t.get("pos", ""))
+        if "_" in pos_str:
+            parts     = pos_str.split("_")
+            prev_code = parts[0].zfill(4)
             next_code = parts[1] if len(parts) > 1 else ""
+        elif "." in pos_str:
+            # 旧形式フォールバック
+            parts     = pos_str.split(".")
+            prev_code = parts[0].zfill(4)
+            next_code = parts[1].zfill(4) if len(parts) > 1 else ""
         else:
-            prev_code = pos_str
+            prev_code = pos_str.zfill(4)
             next_code = ""
 
         prev_name = extract_station_name(prev_code, st_map) if prev_code else "不明"
-        next_name = extract_station_name(next_code, st_map) if next_code else "終点付近"
+        # "####" は終点付近を示すコード
+        if next_code and next_code != "####":
+            next_name = extract_station_name(next_code, st_map)
+        else:
+            next_name = "終点付近"
 
-        # 両数
-        cars_raw = (t.get("cars") or t.get("carNum") or t.get("carCount")
+        # 両数：numberOfCars が正式フィールド
+        cars_raw = (t.get("numberOfCars") or t.get("cars") or t.get("carNum")
                     or (len(t["carInfo"]) if t.get("carInfo") else None))
         try:
             cars = int(cars_raw) if cars_raw is not None else None
