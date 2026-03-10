@@ -50,7 +50,9 @@ API_BASE    = "https://www.train-guide.westjr.co.jp/api/v3"
 COMBOS_DIR  = Path(__file__).parent / "combos"
 
 TYPE_MAP = {
-    1: "新快速", 2: "快速", 3: "普通", 4: "特急", 5: "急行", 6: "直通特急",
+    0: "普通", 1: "新快速", 2: "快速", 3: "普通", 4: "特急",
+    5: "急行", 6: "直通特急", 7: "直通快速", 8: "特快速",
+    9: "準急", 10: "普通", 11: "快速", 12: "新快速",
 }
 
 
@@ -199,27 +201,51 @@ def fetch_station_map(line: str) -> dict[str, str]:
     return st_map
 
 
+def extract_text(val) -> str:
+    """APIの値が {'text': '姫路', ...} 形式でも文字列でも駅名を返す"""
+    if isinstance(val, dict):
+        return str(val.get("text", "不明")).strip()
+    return str(val).strip() if val else "不明"
+
+
+def extract_station_name(code: str, st_map: dict) -> str:
+    """駅コードから駅名を返す。コードが '_' を含む場合は分割して照合"""
+    # "0450_####" のような形式に対応
+    base = code.split("_")[0].zfill(4)
+    return st_map.get(base, st_map.get(code, "不明"))
+
+
 def parse_trains(data: dict, st_map: dict) -> list[dict]:
     trains = []
     for t in data.get("trains", []):
-        no        = str(t.get("no", "不明"))
-        dest      = str(t.get("dest", t.get("destination", "不明")))
-        type_raw  = t.get("type", t.get("typeCode", ""))
-        type_name = (TYPE_MAP.get(type_raw, f"type{type_raw}")
-                     if isinstance(type_raw, int) else str(type_raw).strip())
+        no = str(t.get("no", "不明"))
 
+        # 行先：辞書型 {'text': '姫路', 'code': '...', 'line': '...'} に対応
+        dest = extract_text(t.get("dest", t.get("destination", "不明")))
+
+        # 種別：数値コード or 辞書型 or 文字列
+        type_raw = t.get("type", t.get("typeCode", ""))
+        if isinstance(type_raw, dict):
+            type_name = extract_text(type_raw)
+        elif isinstance(type_raw, int):
+            type_name = TYPE_MAP.get(type_raw, f"種別{type_raw}")
+        else:
+            type_name = str(type_raw).strip()
+
+        # 走行位置："0450_####" or "0302.5" 形式に対応
         pos_str   = str(t.get("pos", ""))
         if "." in pos_str:
             parts     = pos_str.split(".")
-            prev_code = parts[0].zfill(4)
-            next_code = parts[1].zfill(4) if len(parts) > 1 else ""
+            prev_code = parts[0]
+            next_code = parts[1] if len(parts) > 1 else ""
         else:
-            prev_code = pos_str.zfill(4)
+            prev_code = pos_str
             next_code = ""
 
-        prev_name = st_map.get(prev_code, prev_code or "不明")
-        next_name = st_map.get(next_code, next_code or "不明") if next_code else "終点付近"
+        prev_name = extract_station_name(prev_code, st_map) if prev_code else "不明"
+        next_name = extract_station_name(next_code, st_map) if next_code else "終点付近"
 
+        # 両数
         cars_raw = (t.get("cars") or t.get("carNum") or t.get("carCount")
                     or (len(t["carInfo"]) if t.get("carInfo") else None))
         try:
@@ -255,7 +281,7 @@ def notify_discord(line: str, line_label: str, train: dict,
         f"🎯 行先：**{train['dest']}**\n"
         f"🚋 両数：{cars_str}\n"
         f"📍 現在地：{train['prev']} ➡️ {train['next']}{pos_alert}\n"
-        f"🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        f"🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}（JST）"
     )
     try:
         r = requests.post(DISCORD_WEBHOOK_URL, json={"content": message}, timeout=10)
