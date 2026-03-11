@@ -70,7 +70,8 @@
   {"type": "区間快速",   "dest": "篠山口",     "cars": null},
   {"type": "区間快速",   "dest": "新三田",     "cars": null},
   {"type": "区間快速",   "dest": "塚口",     "cars": null},
-
+  {"type": "区間快速",   "dest": "大阪",     "cars": null},
+  
   {"type": "う快速○",   "dest": "姫路",     "cars": null},
   {"type": "う快速○",   "dest": "網干",     "cars": null},
   {"type": "う快速○",   "dest": "加古川",   "cars": null},
@@ -147,6 +148,7 @@
   {"type": "特急",   "dest": "岡山",     "cars": null},
   {"type": "特急",   "dest": "豊岡",     "cars": null},
   {"type": "特急",   "dest": "天橋立",     "cars": null},
+  {"type": "特急",   "dest": "福知山",     "cars": null},
   {"type": "通勤特急",   "dest": "網干",     "cars": null},
   {"type": "通勤特急",   "dest": "新大阪",     "cars": null},
   {"type": "通勤特急",   "dest": "京都",     "cars": null},
