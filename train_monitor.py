@@ -12,7 +12,9 @@ import logging
 import os
 import time
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+JST = timezone(timedelta(hours=9))
 from pathlib import Path
 
 import requests
@@ -68,13 +70,13 @@ class DetectedEntry:
 # 稼働時間チェック
 # ────────────────────────────────────────────────
 def is_active_hour() -> bool:
-    now = datetime.now()
+    now = datetime.now(JST)
     return ACTIVE_HOUR_START <= now.hour < ACTIVE_HOUR_END
 
 
 def seconds_until_active() -> int:
     """次の稼働開始まで何秒か"""
-    now = datetime.now()
+    now = datetime.now(JST)
     start = now.replace(hour=ACTIVE_HOUR_START, minute=0, second=0, microsecond=0)
     if now >= start:
         # 翌日の開始まで
@@ -241,11 +243,12 @@ def parse_trains(data: dict, st_map: dict) -> list[dict]:
             next_code = ""
 
         prev_name = extract_station_name(prev_code, st_map) if prev_code else "不明"
-        # "####" は終点付近を示すコード
+        # "####" は停車中を示すコード。stopTimeが入っていれば停車中と確定
+        is_stopped = bool(t.get("stopTime", ""))
         if next_code and next_code != "####":
             next_name = extract_station_name(next_code, st_map)
         else:
-            next_name = "終点付近"
+            next_name = "停車中" if is_stopped else "走行中（終点付近）"
 
         # 両数：numberOfCars が正式フィールド
         cars_raw = (t.get("numberOfCars") or t.get("cars") or t.get("carNum")
@@ -255,8 +258,19 @@ def parse_trains(data: dict, st_map: dict) -> list[dict]:
         except (ValueError, TypeError):
             cars = None
 
-        trains.append({"no": no, "type": type_name, "dest": dest,
-                        "prev": prev_name, "next": next_name, "cars": cars})
+        # 列車名：種別に「特急」が含まれる場合のみ取得
+        nickname = ""
+        if "特急" in type_name:
+            nickname = str(t.get("nickname", "") or "").strip()
+
+        # 遅延分数
+        try:
+            delay = int(t.get("delayMinutes", 0) or 0)
+        except (ValueError, TypeError):
+            delay = 0
+
+        trains.append({"no": no, "type": type_name, "dest": dest, "nickname": nickname,
+                        "prev": prev_name, "next": next_name, "cars": cars, "delay": delay})
     return trains
 
 
@@ -275,15 +289,27 @@ def notify_discord(line: str, line_label: str, train: dict,
     count_str = f"（{notify_count}回目の通知）" if is_renotify else ""
     pos_alert = "\n🚨 前回通知時と同じ位置です（停車中または遅延の可能性）" if same_position else ""
 
+    nickname_line = f"🚅 列車名：**{train['nickname']}**\n" if train.get("nickname") else ""
+    delay = train.get("delay", 0)
+    if delay >= 60:
+        delay_line = "⏳ 遅れ：60分以上\n"
+    elif delay > 0:
+        delay_line = f"⏳ 遅れ：{delay}分\n"
+    else:
+        delay_line = "✅ 定刻\n"
+
     message = (
         f"{header} {count_str}\n"
         f"🛤️ 路線：{line_label}\n"
         f"🚃 列車番号：`{train['no']}`\n"
         f"🏷️ 種別：**{train['type']}**\n"
+        f"{nickname_line}"
         f"🎯 行先：**{train['dest']}**\n"
         f"🚋 両数：{cars_str}\n"
+        f"{delay_line}"
         f"📍 現在地：{train['prev']} ➡️ {train['next']}{pos_alert}\n"
-        f"🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}（JST）"
+        f"🕐 {datetime.now(JST).strftime('%Y-%m-%d %H:%M:%S')}（JST）\n"
+        f"\u200b"
     )
     try:
         r = requests.post(DISCORD_WEBHOOK_URL, json={"content": message}, timeout=10)
@@ -338,7 +364,7 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
         return st_map
 
     trains      = parse_trains(data, st_map)
-    now         = datetime.now()
+    now         = datetime.now(JST)
     active_keys = set()
 
     for train in trains:
