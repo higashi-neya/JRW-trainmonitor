@@ -368,7 +368,8 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
     active_keys = set()
 
     for train in trains:
-        cache_key = (train["no"], train["type"], train["dest"], train["cars"])
+        # 列車番号のみでキャッシュ識別（両数変動による誤連投を防ぐ）
+        cache_key = train["no"]
         active_keys.add(cache_key)
 
         if is_normal(train, strict, loose, u_alert, wildcard_types):
