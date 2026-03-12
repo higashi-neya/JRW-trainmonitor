@@ -285,8 +285,6 @@ def notify_discord(line: str, line_label: str, train: dict,
         return
 
     cars_str  = f"{train['cars']}両" if train["cars"] is not None else "両数不明"
-    header    = "🔁 **異常列車が引き続き走行中です**" if is_renotify else "⚠️ **異常列車を検知しました**"
-    count_str = f"（{notify_count}回目の通知）" if is_renotify else ""
     pos_alert = "\n🚨 前回通知時と同じ位置です（停車中または遅延の可能性）" if same_position else ""
 
     nickname_line = f"🚅 列車名：**{train['nickname']}**\n" if train.get("nickname") else ""
@@ -298,8 +296,13 @@ def notify_discord(line: str, line_label: str, train: dict,
     else:
         delay_line = "✅ 定刻\n"
 
+    if is_renotify:
+        header = f"🔁 **非定期列車･代走が引き続き走行中です**\n（{notify_count}回目の通知）"
+    else:
+        header = "⚠️ **非定期列車･代走を検知しました**"
+
     message = (
-        f"{header} {count_str}\n"
+        f"{header}\n"
         f"🛤️ 路線：{line_label}\n"
         f"🚃 列車番号：`{train['no']}`\n"
         f"🏷️ 種別：**{train['type']}**\n"
@@ -324,7 +327,7 @@ def notify_discord(line: str, line_label: str, train: dict,
 # 路線ごとの状態管理
 # ────────────────────────────────────────────────
 LINE_LABELS = {
-    "kobesanyo":     "JR神戸線・山陽線",
+    "kobesanyo":     "JR神戸線･山陽本線",
     "kyoto":         "JR京都線",
     "hokurikubiwako":"琵琶湖線・北陸線",
     "osakaloop":     "大阪環状線",
@@ -337,10 +340,10 @@ LINE_LABELS = {
     "sanin1":        "山陰線（園部〜福知山）",
     "sanin2":        "山陰線（福知山〜居組）",
     "osakahigashi":  "おおさか東線",
-    "takarazuka":    "JR宝塚線",
+    "takarazuka":    "福知山線",
     "fukuchiyama":   "JR宝塚線・福知山線",
-    "tozai":         "JR東西線",
-    "gakkentoshi":   "学研都市線",
+    "tozai":         "JR東西線･片町線",
+    "gakkentoshi":   "JR東西線･片町線",
     "bantan":        "播但線",
     "maizuru":       "舞鶴線",
     "yumesaki":      "JRゆめ咲線",
