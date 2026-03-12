@@ -284,7 +284,7 @@ def notify_discord(line: str, line_label: str, train: dict,
         log.warning("DISCORD_WEBHOOK_URL 未設定のため通知スキップ")
         return
 
-    cars_str  = f"{train['cars']}両" if train["cars"] is not None else "両数不明"
+    cars_line = f"🚋 両数：{train['cars']}両\n" if train["cars"] is not None else ""
     pos_alert = "\n🚨 前回通知時と同じ位置です（停車中または遅延の可能性）" if same_position else ""
 
     nickname_line = f"🚅 列車名：**{train['nickname']}**\n" if train.get("nickname") else ""
@@ -308,7 +308,7 @@ def notify_discord(line: str, line_label: str, train: dict,
         f"🏷️ 種別：**{train['type']}**\n"
         f"{nickname_line}"
         f"🎯 行先：**{train['dest']}**\n"
-        f"🚋 両数：{cars_str}\n"
+        f"{cars_line}"
         f"{delay_line}"
         f"📍 現在地：{train['prev']} ➡️ {train['next']}{pos_alert}\n"
         f"🕐 {datetime.now(JST).strftime('%Y-%m-%d %H:%M:%S')}（JST）\n"
