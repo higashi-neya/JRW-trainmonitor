@@ -186,6 +186,7 @@
   {"type": "特急",   "dest": "鳥取",     "cars": null},
   {"type": "特急",   "dest": "浜坂",     "cars": null},
   {"type": "特急",   "dest": "香住",     "cars": null},
+  {"type": "特急",   "dest": "高山",     "cars": null},
   {"type": "特急",   "dest": "岡山",     "cars": null},
   {"type": "特急",   "dest": "豊岡",     "cars": null},
   {"type": "特急",   "dest": "天橋立",     "cars": null},
