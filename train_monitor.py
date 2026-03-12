@@ -378,14 +378,12 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
         if is_normal(train, strict, loose, u_alert, wildcard_types):
             continue
 
-        cars_str = f"{train['cars']}両" if train["cars"] else "両数不明"
-
         if cache_key not in cache:
             cache[cache_key] = DetectedEntry(
                 first_detected=now, last_notified=now, notify_count=1,
                 last_prev=train["prev"], last_next=train["next"],
             )
-            log.warning(f"[{line}] 初回検知: {train['no']} {train['type']} {train['dest']} {cars_str} {train['prev']}→{train['next']}")
+            log.warning(f"[{line}] 初回検知: {train['no']} {train['type']} {train['dest']} {train['prev']}→{train['next']}")
             notify_discord(line, label, train, is_renotify=False, notify_count=1)
 
         else:
@@ -403,7 +401,7 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
 
     # 走行終了した列車をキャッシュから削除
     for k in set(cache.keys()) - active_keys:
-        log.info(f"[{line}] 走行終了・キャッシュ削除: {k[0]} {k[1]} {k[2]}")
+        log.info(f"[{line}] 走行終了・キャッシュ削除: {k}")
         del cache[k]
 
     return st_map
