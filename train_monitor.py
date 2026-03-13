@@ -50,6 +50,8 @@ LINES = [l.strip() for l in os.environ.get("LINES", _DEFAULT_LINES).split(",") i
 
 API_BASE    = "https://www.train-guide.westjr.co.jp/api/v3"
 COMBOS_DIR  = Path(__file__).parent / "combos"
+CACHE_DIR   = Path(__file__).parent / "cache"
+CACHE_DIR.mkdir(exist_ok=True)
 
 
 
@@ -64,6 +66,53 @@ class DetectedEntry:
     notify_count:   int = 0
     last_prev:      str = ""
     last_next:      str = ""
+
+
+# ────────────────────────────────────────────────
+# キャッシュ永続化
+# ────────────────────────────────────────────────
+def cache_path(line: str) -> Path:
+    return CACHE_DIR / f"{line}.json"
+
+
+def save_cache(line: str, cache: dict):
+    """キャッシュをJSONファイルに保存"""
+    try:
+        data = {}
+        for key, entry in cache.items():
+            data[key] = {
+                "first_detected": entry.first_detected.isoformat(),
+                "last_notified":  entry.last_notified.isoformat(),
+                "notify_count":   entry.notify_count,
+                "last_prev":      entry.last_prev,
+                "last_next":      entry.last_next,
+            }
+        cache_path(line).write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    except Exception as e:
+        log.error(f"[{line}] キャッシュ保存失敗: {e}")
+
+
+def load_cache(line: str) -> dict:
+    """JSONファイルからキャッシュを読み込み"""
+    path = cache_path(line)
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        cache = {}
+        for key, v in data.items():
+            cache[key] = DetectedEntry(
+                first_detected = datetime.fromisoformat(v["first_detected"]),
+                last_notified  = datetime.fromisoformat(v["last_notified"]),
+                notify_count   = v["notify_count"],
+                last_prev      = v["last_prev"],
+                last_next      = v["last_next"],
+            )
+        log.info(f"[{line}] キャッシュ読み込み: {len(cache)}件")
+        return cache
+    except Exception as e:
+        log.error(f"[{line}] キャッシュ読み込み失敗（空で起動）: {e}")
+        return {}
 
 
 # ────────────────────────────────────────────────
@@ -405,6 +454,9 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
         log.info(f"[{line}] 走行終了・キャッシュ削除: {k}")
         del cache[k]
 
+    # キャッシュをファイルに保存
+    save_cache(line, cache)
+
     return st_map
 
 
@@ -420,9 +472,9 @@ def main():
     log.info(f"Discord通知: {'有効' if DISCORD_WEBHOOK_URL else '無効（URL未設定）'}")
     log.info("=" * 60)
 
-    # 路線ごとのキャッシュ・駅情報を保持
+    # 路線ごとのキャッシュ・駅情報を保持（ファイルから復元）
     st_maps: dict[str, dict] = {line: {} for line in LINES}
-    caches:  dict[str, dict] = {line: {} for line in LINES}
+    caches:  dict[str, dict] = {line: load_cache(line) for line in LINES}
     loop_count = 0
 
     while True:
@@ -435,6 +487,7 @@ def main():
             # キャッシュをリセット（翌朝は新鮮な状態で開始）
             for line in LINES:
                 caches[line].clear()
+                save_cache(line, {})
             time.sleep(wait_sec)
             continue
 
