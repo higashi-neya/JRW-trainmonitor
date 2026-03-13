@@ -318,7 +318,8 @@ def notify_discord(line: str, line_label: str, train: dict,
         r = requests.post(DISCORD_WEBHOOK_URL, json={"content": message}, timeout=10)
         r.raise_for_status()
         label = "再通知" if is_renotify else "初回通知"
-        log.info(f"[{line}] Discord {label}: {train['no']} {train['type']} {train['dest']} {cars_str}")
+        cars_disp = f"{train['cars']}両" if train["cars"] is not None else "両数不明"
+        log.info(f"[{line}] Discord {label}: {train['no']} {train['type']} {train['dest']} {cars_disp}")
     except Exception as e:
         log.error(f"[{line}] Discord通知失敗: {e}")
 
