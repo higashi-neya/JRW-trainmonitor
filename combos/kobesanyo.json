@@ -199,6 +199,7 @@
   {"type": "通勤特急",   "dest": "奈良",     "cars": null},
   {"type": "通勤特急",   "dest": "米原",     "cars": null},
   {"type": "通勤特急",   "dest": "草津",     "cars": null},
+  {"type": "特急",   "dest": "奈良",     "cars": null},
   {"type": "特急",   "dest": "京都",     "cars": null},
   {"type": "特急",   "dest": "新大阪",     "cars": null},
   {"type": "特急",   "dest": "和歌山",     "cars": null},
