@@ -163,6 +163,7 @@
   {"type": "普通",   "dest": "四条畷",     "cars": null},
   {"type": "普通",   "dest": "松井山手",     "cars": null},
   {"type": "普通",   "dest": "京田辺",     "cars": null},
+  {"type": "普通",   "dest": "同志社前",     "cars": null},
   {"type": "普通",   "dest": "木津",     "cars": null},
   {"type": "普通",   "dest": "奈良",     "cars": null},
   {"type": "普通",   "dest": "高槻",     "cars": null},
