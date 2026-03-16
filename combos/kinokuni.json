@@ -1,0 +1,22 @@
+[
+  {
+    "type": "特急",
+    "dest": "白浜",
+    "cars": null
+  },
+  {
+    "type": "特急",
+    "dest": "新宮",
+    "cars": null
+  },
+  {
+    "type": "普通",
+    "dest": "和歌山",
+    "cars": null
+  },
+  {
+    "type": "普通",
+    "dest": "新宮",
+    "cars": null
+  }
+]
