@@ -140,8 +140,8 @@
   {"type": "普通",   "dest": "加古川",   "cars": null},
   {"type": "普通",   "dest": "西明石",   "cars": null},
   {"type": "普通",   "dest": "上郡",     "cars": null},
-  {"type": "普通",   "dest": "播州赤穂",     "cars": 
-  {"type": "普通",   "dest": "網干/播州赤穂",     "cars": null}
+{"type": "普通",   "dest": "播州赤穂",     "cars": null},
+  {"type": "普通",   "dest": "網干/播州赤穂",     "cars": null},
   {"type": "普通",   "dest": "大原",     "cars": null},
   {"type": "普通",   "dest": "智頭",     "cars": null},
   {"type": "普通",   "dest": "鳥取",     "cars": null},
