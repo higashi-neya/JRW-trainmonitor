@@ -16,6 +16,7 @@
   {"type": "A新快○", "dest": "野洲",     "cars": 4},
   {"type": "A新快○", "dest": "野洲",     "cars": 8},
   {"type": "A新快○", "dest": "野洲",     "cars": 12},
+  {"type": "う新快○", "dest": "姫路",     "cars": 12},
   
   {"type": "新快速", "dest": "姫路",     "cars": 8},
   {"type": "新快速", "dest": "姫路",     "cars": 12},
@@ -67,6 +68,7 @@
   {"type": "快速",   "dest": "加古川",   "cars": null},
   {"type": "快速",   "dest": "西明石",   "cars": null},
   {"type": "快速",   "dest": "播州赤穂",     "cars": null},
+  {"type": "快速",   "dest": "網干/播州赤穂",     "cars": null},
   {"type": "快速",   "dest": "上郡",     "cars": null},
   {"type": "快速",   "dest": "野洲",     "cars": null},
   {"type": "快速",   "dest": "米原",     "cars": null},
@@ -139,6 +141,7 @@
   {"type": "普通",   "dest": "西明石",   "cars": null},
   {"type": "普通",   "dest": "上郡",     "cars": null},
   {"type": "普通",   "dest": "播州赤穂",     "cars": null},
+  {"type": "普通",   "dest": "網干/播州赤穂",     "cars": null}
   {"type": "普通",   "dest": "大原",     "cars": null},
   {"type": "普通",   "dest": "智頭",     "cars": null},
   {"type": "普通",   "dest": "鳥取",     "cars": null},
