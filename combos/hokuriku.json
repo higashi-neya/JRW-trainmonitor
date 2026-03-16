@@ -18,6 +18,7 @@
   {"type": "普通",   "dest": "近江今津",     "cars": null},
 
   {"type": "特急",   "dest": "名古屋",     "cars": null},
+  {"type": "特急",   "dest": "米原",     "cars": null},
   {"type": "特急",   "dest": "敦賀",     "cars": null, "u_alert": true},
   {"type": "特急",   "dest": "大阪",     "cars": null, "u_alert": true}
 ]
