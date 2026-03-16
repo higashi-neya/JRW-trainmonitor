@@ -126,6 +126,8 @@
   {"type": "特急",   "dest": "倉吉",     "cars": null},
   {"type": "特急",   "dest": "鳥取",     "cars": null},
   {"type": "特急",   "dest": "高山",     "cars": null},
+  {"type": "特急",   "dest": "米原",     "cars": null},
+  {"type": "特急",   "dest": "名古屋",     "cars": null},
   {"type": "通勤特急",   "dest": "網干",     "cars": null},
   {"type": "通勤特急",   "dest": "大阪",     "cars": null},
   {"type": "通勤特急",   "dest": "京都",     "cars": null},
