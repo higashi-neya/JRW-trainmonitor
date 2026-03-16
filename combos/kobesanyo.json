@@ -94,7 +94,8 @@
   {"type": "丹波路快",   "dest": "大阪",     "cars": 6},
   {"type": "丹波路快",   "dest": "篠山口",     "cars": 8},
   {"type": "丹波路快",   "dest": "大阪",     "cars": 8},
-  
+
+  {"type": "う区快○",   "dest": "篠山口",     "cars": null},
   {"type": "う区快○",   "dest": "新三田",     "cars": null},
   {"type": "う区快○",   "dest": "大阪",     "cars": null},
   {"type": "区間快速",   "dest": "篠山口",     "cars": null},
