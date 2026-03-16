@@ -33,6 +33,13 @@ log = logging.getLogger(__name__)
 # 環境変数
 # ────────────────────────────────────────────────
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL", "")
+
+def get_webhook_url(line: str) -> str:
+    """路線ごとのWebhook URLを取得。個別設定がなければ共通URLを使用。
+    例）kobesanyo → 環境変数 WEBHOOK_kobesanyo があればそれを使用
+    """
+    key = f"WEBHOOK_{line.upper()}"
+    return os.environ.get(key, DISCORD_WEBHOOK_URL)
 POLL_MIN            = int(os.environ.get("POLL_MIN",      "3"))
 RENOTIFY_MIN        = int(os.environ.get("RENOTIFY_MIN",  "9"))
 ACTIVE_HOUR_START   = int(os.environ.get("ACTIVE_HOUR_START", "6"))   # 稼働開始時刻
@@ -45,6 +52,8 @@ _DEFAULT_LINES = ",".join([
     "sagano", "sanin1", "sanin2", "osakahigashi", "takarazuka",
     "fukuchiyama", "tozai", "gakkentoshi", "bantan", "maizuru",
     "yumesaki", "kansaiairport",
+    "hokuriku", "kusatsu", "wakayama1", "wakayama2",
+    "manyomahoroba", "kansai", "kinokuni",
 ])
 LINES = [l.strip() for l in os.environ.get("LINES", _DEFAULT_LINES).split(",") if l.strip()]
 
@@ -329,8 +338,9 @@ def parse_trains(data: dict, st_map: dict) -> list[dict]:
 def notify_discord(line: str, line_label: str, train: dict,
                    is_renotify: bool = False, notify_count: int = 1,
                    same_position: bool = False):
-    if not DISCORD_WEBHOOK_URL:
-        log.warning("DISCORD_WEBHOOK_URL 未設定のため通知スキップ")
+    webhook_url = get_webhook_url(line)
+    if not webhook_url:
+        log.warning(f"[{line}] Webhook URL未設定のため通知スキップ")
         return
 
     cars_line = f"🚋 両数：{train['cars']}両\n" if train["cars"] is not None else ""
@@ -346,9 +356,9 @@ def notify_discord(line: str, line_label: str, train: dict,
         delay_line = "✅ 定刻\n"
 
     if is_renotify:
-        header = f"🔁 **非定期列車･代走が引き続き走行中です**\n（{notify_count}回目の通知）"
+        header = f"🔁 **所定外列車･代走が引き続き走行中です**\n（{notify_count}回目の通知）"
     else:
-        header = "⚠️ **非定期列車･代走を検知しました**"
+        header = "⚠️ **所定外列車･代走を検知しました**"
 
     message = (
         f"{header}\n"
@@ -364,7 +374,7 @@ def notify_discord(line: str, line_label: str, train: dict,
         f"\u200b"
     )
     try:
-        r = requests.post(DISCORD_WEBHOOK_URL, json={"content": message}, timeout=10)
+        r = requests.post(webhook_url, json={"content": message}, timeout=10)
         r.raise_for_status()
         label = "再通知" if is_renotify else "初回通知"
         cars_disp = f"{train['cars']}両" if train["cars"] is not None else "両数不明"
@@ -398,6 +408,13 @@ LINE_LABELS = {
     "maizuru":       "舞鶴線",
     "yumesaki":      "JRゆめ咲線",
     "kansaiairport": "関西空港線",
+    "hokuriku":      "北陸線",
+    "kusatsu":       "草津線",
+    "wakayama1":     "和歌山線（王寺〜五条）",
+    "wakayama2":     "和歌山線（五条〜和歌山）",
+    "manyomahoroba": "万葉まほろば線",
+    "kansai":        "関西本線（加茂〜亀山）",
+    "kinokuni":      "きのくに線",
 }
 
 
