@@ -1,10 +1,10 @@
 [
-  {"type": "新快速", "dest": "姫路",     "cars": 4},
-  {"type": "新快速", "dest": "網干",     "cars": 4},
-  {"type": "新快速", "dest": "播州赤穂", "cars": 4},
-  {"type": "新快速", "dest": "大阪",     "cars": 4},
-  {"type": "新快速", "dest": "敦賀",     "cars": 4},
-  {"type": "新快速", "dest": "近江塩津", "cars": 4},
+  {"type": "新快速", "dest": "姫路",     "cars": null},
+  {"type": "新快速", "dest": "網干",     "cars": null},
+  {"type": "新快速", "dest": "播州赤穂", "cars": null},
+  {"type": "新快速", "dest": "大阪",     "cars": null},
+  {"type": "新快速", "dest": "敦賀",     "cars": null},
+  {"type": "新快速", "dest": "近江塩津", "cars": null},
   
   {"type": "快速",   "dest": "大阪",     "cars": null},
   {"type": "快速",   "dest": "敦賀",     "cars": null},
