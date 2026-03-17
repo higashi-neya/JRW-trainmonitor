@@ -62,6 +62,7 @@
   {"type": "特急",   "dest": "京都", "cars": null},
   {"type": "特急",   "dest": "新大阪",     "cars": null},
   {"type": "特急",   "dest": "関西空港",     "cars": null},
+  {"type": "関空特急",   "dest": "関西空港",     "cars": null},
   {"type": "特急",   "dest": "和歌山",     "cars": null},
   {"type": "特急",   "dest": "紀伊田辺",     "cars": null},
   {"type": "特急",   "dest": "白浜",     "cars": null},
