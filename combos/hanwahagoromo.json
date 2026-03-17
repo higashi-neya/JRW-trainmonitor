@@ -5,6 +5,7 @@
   {"type": "快速",   "dest": "東岸和田",   "cars": 8},
   {"type": "快速",   "dest": "日根野",     "cars": 6},
   {"type": "快速",   "dest": "日根野",     "cars": 8},
+  {"type": "快速",   "dest": "和歌山",     "cars": 4},
   {"type": "快速",   "dest": "和歌山",     "cars": 6},
   {"type": "快速",   "dest": "和歌山",     "cars": 8},
   {"type": "う快速○",   "dest": "天王寺",     "cars": null},
