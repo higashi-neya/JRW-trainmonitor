@@ -60,6 +60,7 @@
   {"type": "普通",   "dest": "糸崎",     "cars": null},
   {"type": "普通",   "dest": "岡山",     "cars": null},
   {"type": "普通",   "dest": "新見",     "cars": null},
+  {"type": "普通",   "dest": "三原",     "cars": null},
   {"type": "普通",   "dest": "福山",     "cars": null},
   {"type": "普通",   "dest": "大阪",     "cars": null},
   {"type": "普通",   "dest": "野洲",     "cars": null},
@@ -69,6 +70,8 @@
 
   {"type": "特急",   "dest": "倉吉",     "cars": null},
   {"type": "特急",   "dest": "鳥取",     "cars": null},
+  {"type": "特急",   "dest": "大阪",     "cars": null},
+  {"type": "特急",   "dest": "京都",     "cars": null},
   {"type": "寝台特急",   "dest": "東京",     "cars": null},
   {"type": "寝台特急",   "dest": "高松/出雲市",     "cars": null},
   {"type": "寝台特急",   "dest": "琴平/出雲市",     "cars": null}
