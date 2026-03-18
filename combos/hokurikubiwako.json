@@ -112,7 +112,7 @@
   {"type": "普通",   "dest": "尼崎",     "cars": 7},
   {"type": "普通",   "dest": "高槻",     "cars": 7},
   {"type": "普通",   "dest": "京都",     "cars": null},
-  {"type": "普通",   "dest": "吹田",     "cars": 7},
+  {"type": "普通",   "dest": "新三田",     "cars": 7},
   {"type": "普通",   "dest": "草津",     "cars": 7},
   {"type": "普通",   "dest": "野洲",     "cars": null},
   {"type": "普通",   "dest": "米原",     "cars": null},
