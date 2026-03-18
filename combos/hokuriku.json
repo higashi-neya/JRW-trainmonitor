@@ -7,6 +7,7 @@
   {"type": "新快速", "dest": "近江塩津", "cars": null},
   
   {"type": "快速",   "dest": "大阪",     "cars": null},
+  {"type": "快速",   "dest": "姫路",     "cars": null},
   {"type": "快速",   "dest": "敦賀",     "cars": null},
     
   {"type": "普通",   "dest": "加古川",   "cars": null},
