@@ -1,12 +1,13 @@
 [
-  {
-    "type": "特急",
-    "dest": "城崎温泉",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "和田山",
-    "cars": 2
-  }
+  {"type": "普通",   "dest": "姫路",     "cars": null},
+  {"type": "普通",   "dest": "福崎",     "cars": null},
+  {"type": "普通",   "dest": "寺前",     "cars": null},
+  {"type": "普通",   "dest": "和田山",     "cars": null},
+  {"type": "普通",   "dest": "城崎温泉",     "cars": null},
+
+  {"type": "特急",   "dest": "大阪", "cars": null},
+  {"type": "特急",   "dest": "鳥取",     "cars": null},
+  {"type": "特急",   "dest": "浜坂",     "cars": null},
+  {"type": "特急",   "dest": "香住",     "cars": null},
+  {"type": "特急",   "dest": "豊岡",     "cars": null}
 ]
