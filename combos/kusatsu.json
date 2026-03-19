@@ -1,17 +1,7 @@
 [
-  {
-    "type": "快速",
-    "dest": "柘植",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "柘植",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "草津",
-    "cars": null
-  }
+  {"type": "普通",   "dest": "柘植",     "cars": null},
+  {"type": "普通",   "dest": "貴生川",     "cars": null},
+  {"type": "普通",   "dest": "草津",     "cars": null},
+  {"type": "普通",   "dest": "京都",     "cars": null},
+  {"type": "普通",   "dest": "網干",     "cars": null}
 ]
