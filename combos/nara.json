@@ -1,12 +1,10 @@
 [
-  {
-    "type": "みやこ路快速",
-    "dest": "奈良",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "奈良",
-    "cars": 4
-  }
+  {"type": "みやこ路快速", "dest": "奈良",   "cars": null, "notice_required": true},
+  {"type": "みやこ路快速", "dest": "京都",   "cars": null, "notice_required": true},
+  {"type": "区間快速",     "dest": "奈良",   "cars": null, "notice_required": true},
+  {"type": "区間快速",     "dest": "京都",   "cars": null, "notice_required": true},
+  {"type": "普通",         "dest": "奈良",   "cars": null},
+  {"type": "普通",         "dest": "京都",   "cars": null},
+  {"type": "普通",         "dest": "城陽",   "cars": null},
+  {"type": "普通",         "dest": "宇治",   "cars": null}
 ]
