@@ -1,12 +1,6 @@
 [
-  {
-    "type": "普通",
-    "dest": "亀山",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "加茂",
-    "cars": null
-  }
+  {"type": "普通",   "dest": "加茂",     "cars": null},
+  {"type": "普通",   "dest": "伊賀上野",     "cars": null},
+  {"type": "普通",   "dest": "柘植",     "cars": null},
+  {"type": "普通",   "dest": "亀山",     "cars": null}
 ]
