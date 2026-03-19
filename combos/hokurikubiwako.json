@@ -113,8 +113,8 @@
   {"type": "普通",   "dest": "高槻",     "cars": 7},
   {"type": "普通",   "dest": "京都",     "cars": null},
   {"type": "普通",   "dest": "新三田",     "cars": 7},
-  {"type": "普通",   "dest": "草津",     "cars": 7},
-  {"type": "普通",   "dest": "野洲",     "cars": null},
+  {"type": "普通", "dest": "草津", "cars": 7, "direction": 0},
+  {"type": "普通", "dest": "野洲", "cars": null, "direction": 0},
   {"type": "普通",   "dest": "米原",     "cars": null},
   {"type": "普通",   "dest": "長浜",     "cars": null},
   {"type": "普通",   "dest": "近江塩津",     "cars": null},
@@ -129,6 +129,7 @@
   {"type": "快速",   "dest": "浜松",     "cars": null},
   {"type": "新快速",   "dest": "豊橋",     "cars": null},
   {"type": "特別快速",   "dest": "豊橋",     "cars": null},
+
 
   {"type": "特急",   "dest": "倉吉",     "cars": null},
   {"type": "特急",   "dest": "鳥取",     "cars": null},
