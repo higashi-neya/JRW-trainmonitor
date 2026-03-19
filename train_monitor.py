@@ -146,7 +146,7 @@ def seconds_until_active() -> int:
 # ────────────────────────────────────────────────
 # combos/{line}.json 読み込み
 # ────────────────────────────────────────────────
-def load_combos(line: str) -> tuple[set, set, set, set]:
+def load_combos(line: str) -> tuple[set, set, set, set, set]:
     """
     Returns:
         strict        : {(type, dest, cars), ...}  両数指定あり
@@ -157,20 +157,21 @@ def load_combos(line: str) -> tuple[set, set, set, set]:
     path = COMBOS_DIR / f"{line}.json"
     if not path.exists():
         log.warning(f"[{line}] combos/{line}.json が見つかりません。全列車を検知対象にします。")
-        return set(), set(), set(), set()
+        return set(), set(), set(), set(), set()
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except Exception as e:
         log.error(f"[{line}] combos読み込み失敗: {e}")
         return set(), set(), set(), set()
 
-    strict, loose, u_alert, wildcard_types = set(), set(), set(), set()
+    strict, loose, u_alert, wildcard_types, notice_required = set(), set(), set(), set(), set()
     for item in data:
         t = str(item.get("type", "")).strip()
         d = str(item.get("dest", "")).strip()
         c = item.get("cars")
         u = bool(item.get("u_alert"))
-        w = bool(item.get("wildcard"))  # 種別まるごとスルー
+        w = bool(item.get("wildcard"))
+        n = bool(item.get("notice_required"))  # noticeがnullなら検知
 
         if not t:
             continue
@@ -182,36 +183,41 @@ def load_combos(line: str) -> tuple[set, set, set, set]:
 
         if not d:
             continue
+        direction = item.get("direction", None)  # None=方向問わず
+
         if u:
             u_alert.add((t, d))
+        if n:
+            notice_required.add((t, d))
         if c is None:
-            loose.add((t, d))
+            loose.add((t, d, direction))
         else:
-            strict.add((t, d, int(c)))
+            strict.add((t, d, int(c), direction))
 
     log.debug(
         f"[{line}] combos: strict={len(strict)} loose={len(loose)} "
-        f"u_alert={len(u_alert)} wildcard={len(wildcard_types)}"
+        f"u_alert={len(u_alert)} wildcard={len(wildcard_types)} notice_req={len(notice_required)}"
     )
-    return strict, loose, u_alert, wildcard_types
+    return strict, loose, u_alert, wildcard_types, notice_required
 
 
 # ────────────────────────────────────────────────
 # 判定
 # ────────────────────────────────────────────────
-def is_normal(train: dict, strict: set, loose: set, u_alert: set, wildcard_types: set) -> bool:
+def is_normal(train: dict, strict: set, loose: set, u_alert: set, wildcard_types: set, notice_required: set) -> bool:
     """
     判定ロジック：
     ① wildcard_types に種別が入っていれば両数・行先問わず全スルー
     ② u_alert エントリはう列番のみ検知
-    ③ loose   エントリは両数問わずスルー
-    ④ strict  エントリは (種別, 行先, 両数) 3点一致でスルー
-    ⑤ それ以外は検知
+    ③ notice_required エントリはnoticeがnullなら検知
+    ④ loose   エントリは両数問わずスルー
+    ⑤ strict  エントリは (種別, 行先, 両数) 3点一致でスルー
+    ⑥ それ以外は検知
     """
     t, d, c = train["type"], train["dest"], train["cars"]
     is_u    = train["no"].startswith("う")
 
-    # ① 種別まるごとスルー（快速・普通・特急など両数チェック不要な種別）
+    # ① 種別まるごとスルー
     if t in wildcard_types:
         return True
 
@@ -219,13 +225,26 @@ def is_normal(train: dict, strict: set, loose: set, u_alert: set, wildcard_types
     if (t, d) in u_alert:
         return not is_u
 
-    # ③ 両数問わずスルー
-    if (t, d) in loose:
+    # ③ notice_required：noticeが入っていればスルー、nullなら検知
+    if (t, d) in notice_required:
+        if not train.get("notice"):
+            train["notice_alert"] = True  # 通知文にうれしート解除を表示
+            return False
         return True
 
-    # ④ 両数指定あり：3点一致でスルー（新快速など両数チェックあり）
-    if c is not None and (t, d, c) in strict:
+    # ④ 両数問わずスルー（direction一致 or 方向問わず）
+    train_dir = train.get("direction", None)
+    if (t, d, None) in loose:        # 方向問わず
         return True
+    if (t, d, train_dir) in loose:   # direction一致
+        return True
+
+    # ⑤ 両数指定あり：一致でスルー（direction一致 or 方向問わず）
+    if c is not None:
+        if (t, d, c, None) in strict:
+            return True
+        if (t, d, c, train_dir) in strict:
+            return True
 
     return False
 
@@ -277,7 +296,8 @@ def extract_station_name(code: str, st_map: dict) -> str:
 def parse_trains(data: dict, st_map: dict) -> list[dict]:
     trains = []
     for t in data.get("trains", []):
-        no = str(t.get("no", "不明"))
+        no        = str(t.get("no", "不明"))
+        direction = t.get("direction", None)
 
         # 行先：{"text": "姫路", "code": "...", "line": "..."} 形式
         dest = extract_text(t.get("dest", "不明"))
@@ -321,6 +341,15 @@ def parse_trains(data: dict, st_map: dict) -> list[dict]:
         if "特急" in type_name:
             nickname = str(t.get("nickname", "") or "").strip()
 
+        # notice（うれしートなどの案内文）
+        notice_raw = t.get("notice", None)
+        if isinstance(notice_raw, list):
+            notice = " ".join(notice_raw).strip()
+        elif notice_raw:
+            notice = str(notice_raw).strip()
+        else:
+            notice = ""
+
         # 遅延分数
         try:
             delay = int(t.get("delayMinutes", 0) or 0)
@@ -328,7 +357,9 @@ def parse_trains(data: dict, st_map: dict) -> list[dict]:
             delay = 0
 
         trains.append({"no": no, "type": type_name, "dest": dest, "nickname": nickname,
-                        "prev": prev_name, "next": next_name, "cars": cars, "delay": delay})
+                        "prev": prev_name, "next": next_name, "cars": cars,
+                        "delay": delay, "notice": notice, "notice_alert": False,
+                        "direction": direction})
     return trains
 
 
@@ -347,6 +378,16 @@ def notify_discord(line: str, line_label: str, train: dict,
     pos_alert = "\n🚨 前回通知時と同じ位置です（停車中または遅延の可能性）" if same_position else ""
 
     nickname_line = f"🚅 列車名：**{train['nickname']}**\n" if train.get("nickname") else ""
+    # 座席解除判定（notice_alertはnara.json由来、種別名パターンは全路線共通）
+    type_name_for_seat = train.get("type", "")
+    if train.get("notice_alert"):
+        ureseat_line = "💺❌️ うれしート解除\n"
+    elif type_name_for_seat == "A新快×":
+        ureseat_line = "💺❌️ Aシート解除\n"
+    elif (type_name_for_seat.startswith("う") and type_name_for_seat.endswith("×")):
+        ureseat_line = "💺❌️ うれしート解除\n"
+    else:
+        ureseat_line = ""
     delay = train.get("delay", 0)
     if delay >= 60:
         delay_line = "⏳ 遅れ：60分以上\n"
@@ -367,6 +408,7 @@ def notify_discord(line: str, line_label: str, train: dict,
         f"🏷️ 種別：**{train['type']}**\n"
         f"{nickname_line}"
         f"🎯 行先：**{train['dest']}**\n"
+        f"{ureseat_line}"
         f"{cars_line}"
         f"{delay_line}"
         f"📍 現在地：{train['prev']} ➡️ {train['next']}{pos_alert}\n"
@@ -427,7 +469,7 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
         st_map = fetch_station_map(line)
         log.info(f"[{line}] 駅情報 {len(st_map)} 件取得")
 
-    strict, loose, u_alert, wildcard_types = load_combos(line)
+    strict, loose, u_alert, wildcard_types, notice_required = load_combos(line)
 
     data = fetch_json(f"{API_BASE}/{line}.json")
     if data is None:
@@ -442,7 +484,7 @@ def poll_line(line: str, st_map: dict, cache: dict) -> dict:
         cache_key = train["no"]
         active_keys.add(cache_key)
 
-        if is_normal(train, strict, loose, u_alert, wildcard_types):
+        if is_normal(train, strict, loose, u_alert, wildcard_types, notice_required):
             continue
 
         if cache_key not in cache:
