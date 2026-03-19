@@ -1,22 +1,27 @@
 [
-  {
-    "type": "特急",
-    "dest": "白浜",
-    "cars": null
-  },
-  {
-    "type": "特急",
-    "dest": "新宮",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "和歌山",
-    "cars": null
-  },
-  {
-    "type": "普通",
-    "dest": "新宮",
-    "cars": null
-  }
+  {"type": "快速",   "dest": "天王寺",     "cars": null},
+  {"type": "快速",   "dest": "和歌山",     "cars": null},
+  {"type": "快速",   "dest": "紀伊田辺",     "cars": null},
+  {"type": "快速",   "dest": "環状",     "cars": null},
+  {"type": "快速",   "dest": "京橋",     "cars": null},
+
+  {"type": "普通",   "dest": "環状",     "cars": null},
+  {"type": "普通",   "dest": "京橋",     "cars": null},
+  {"type": "普通",   "dest": "天王寺",     "cars": null},
+  {"type": "普通",   "dest": "和歌山",     "cars": null},
+  {"type": "普通",   "dest": "海南",     "cars": null},
+  {"type": "普通",   "dest": "箕島",     "cars": null},
+  {"type": "普通",   "dest": "湯浅",     "cars": null},
+  {"type": "普通",   "dest": "御坊",     "cars": null},
+  {"type": "普通",   "dest": "紀伊田辺",     "cars": null},
+  {"type": "普通",   "dest": "紀伊勝浦",     "cars": null},
+  {"type": "普通",   "dest": "串本",     "cars": null},
+  {"type": "普通",   "dest": "新宮",     "cars": null},
+
+  {"type": "特急",   "dest": "京都", "cars": null},
+  {"type": "特急",   "dest": "新大阪",     "cars": null},
+  {"type": "特急",   "dest": "紀伊田辺",     "cars": null},
+  {"type": "特急",   "dest": "白浜",     "cars": null},
+  {"type": "特急",   "dest": "新宮",     "cars": null},
+  {"type": "特急",   "dest": "名古屋",     "cars": null}
 ]
