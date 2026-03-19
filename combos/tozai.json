@@ -131,7 +131,7 @@
   {"type": "普通",   "dest": "京都",     "cars": null},
   {"type": "普通",   "dest": "吹田",     "cars": null},
   {"type": "普通",   "dest": "草津",     "cars": null},
-  {"type": "普通",   "dest": "京橋",     "cars": null},
+  {"type": "普通", "dest": "京橋", "cars": null, "direction": 1},
 
   {"type": "う直快○",   "dest": "奈良",     "cars": null},
   {"type": "う直快○",   "dest": "大阪",     "cars": null},
