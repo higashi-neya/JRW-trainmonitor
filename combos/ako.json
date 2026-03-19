@@ -20,7 +20,6 @@
   {"type": "新快速", "dest": "草津",     "cars": 4},
   {"type": "新快速", "dest": "草津",     "cars": 8},
   {"type": "新快速", "dest": "草津",     "cars": 12},
-  {"type": "新快速", "dest": "姫路",     "cars": null},
   {"type": "新快速", "dest": "野洲",     "cars": 4},
   {"type": "新快速", "dest": "野洲",     "cars": 8},
   {"type": "新快速", "dest": "野洲",     "cars": 12},
