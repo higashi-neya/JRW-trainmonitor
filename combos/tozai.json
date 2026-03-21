@@ -74,6 +74,7 @@
   {"type": "区間快速",   "dest": "松井山手",     "cars": null},
   {"type": "区間快速",   "dest": "同志社前",     "cars": null},
   {"type": "区間快速",   "dest": "京田辺",     "cars": null},
+  {"type": "区間快速",   "dest": "西明石",     "cars": null},
   {"type": "区間快速",   "dest": "木津",     "cars": null},
   {"type": "区間快速",   "dest": "奈良",     "cars": null},
   
