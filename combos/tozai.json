@@ -56,6 +56,10 @@
   
   {"type": "う丹快○",   "dest": "大阪",     "cars": null},
   {"type": "う丹快×",   "dest": "大阪",     "cars": null},
+  {"type": "う丹快○",   "dest": "篠山口",     "cars": null},
+  {"type": "う丹快×",   "dest": "篠山口",     "cars": null},
+  {"type": "う丹快○",   "dest": "福知山",     "cars": null},
+  {"type": "う丹快×",   "dest": "福知山",     "cars": null},
   {"type": "丹波路快",   "dest": "福知山",     "cars": null},
   {"type": "丹波路快",   "dest": "篠山口",     "cars": null},
   {"type": "丹波路快",   "dest": "大阪",     "cars": null},
