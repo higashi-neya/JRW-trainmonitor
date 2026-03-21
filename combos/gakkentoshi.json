@@ -43,7 +43,7 @@
   {"type": "快速",   "dest": "野洲",     "cars": null},
   {"type": "快速",   "dest": "米原",     "cars": null},
   {"type": "快速",   "dest": "長浜",     "cars": null},
-  {"type": "快速",   "dest": "近江塩津",     "cars": null},
+  {"type": "区間快速",   "dest": "西明石",     "cars": null},
   {"type": "快速",   "dest": "大阪",     "cars": null},
   {"type": "快速",   "dest": "篠山口",     "cars": null},
   {"type": "快速",   "dest": "新三田",     "cars": null},
